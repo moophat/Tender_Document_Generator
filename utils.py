@@ -19,6 +19,8 @@ import time
 import pickle
 import pandas as pd
 import json
+import sqlite3
+from datetime import datetime
 
 OK = 0
 WARNING = 1
@@ -423,10 +425,32 @@ def file_selector(folder_path='.'):
     selected_filename = st.multiselect('Select files', file_names)
     return selected_filename
 
-
+def create_default_table(db_path):
+    st.write(os.path.dirname(os.path.abspath(__file__)))
+    conn = sqlite3.connect(db_path)
+    cur = conn.cursor()
+    listOfTables = cur.execute(''' SELECT count(name) FROM sqlite_master WHERE type='table' AND name='data' ''')
+    if listOfTables.fetchone()[0]==0:
+        table = """ CREATE TABLE data (
+                ID INT NOT NULL,
+                type VARCHAR(25) NOT NULL,
+                key VARCHAR(50) NOT NULL,
+                value VARCHAR(65535) NOT NULL,
+                time DATETIME
+            ); """
+        cur.execute(table)
+        insert_query="""INSERT INTO data (ID,type,key,value,time) VALUES(?,?,?,?,?)"""
+        cur.executemany(insert_query, 
+                        [(1,"SVTECH_INFO","Ten_nha_thau","Công ty Cổ phần Phát triển Công nghệ Viễn thông Tin học Sun Việt (SV Technologies JSC)",datetime.now().strftime('%Y-%m-%d %H:%M:%S')),
+                        (1,"SVTECH_INFO","Dia_chi_nha_thau","Số 2A Phan Thúc Duyện, Phường 4, Quận Tân Bình, TP. Hồ Chí Minh, Việt Nam",datetime.now().strftime('%Y-%m-%d %H:%M:%S')),
+                        (1,"SVTECH_INFO","Dia_chi_VP_HN","Toà nhà IC, Tầng 6, 82 Duy Tân, Cầu Giấy, Hà Nội",datetime.now().strftime('%Y-%m-%d %H:%M:%S')),
+                        ])
+        conn.commit()
+    cur.close()
+    conn.close()
 
 @st.experimental_dialog("NEW_BID_INFO_INPUT_DIAGLOG")
-def init_bid_input_info_form_locked(bid_info_schema = None):
+def init_bid_input_info_form_locked(database_path,bid_info_schema = None):
 
     st.subheader(':orange[**Get info of new Bid and saving it to DB**]')
 
@@ -448,13 +472,29 @@ def init_bid_input_info_form_locked(bid_info_schema = None):
         if not st.session_state.bid_info_input_dict:
             st.error('No new info available')
         else:
-            st.dataframe(st.session_state["bid_info_input_dict"])
+            # st.write(st.session_state.bid_info_input_dict) 
+            conn = sqlite3.connect(database_path)
+            cur = conn.cursor()
+            listOfTables = cur.execute(''' SELECT count(name) FROM sqlite_master WHERE type='table' AND name='data' ''')
+            if listOfTables.fetchone()[0]==1:
+                id=cur.execute('''SELECT COALESCE(MAX(ID)+1, 0) FROM data''').fetchone()[0]
+            else:
+                id=1
+            cur.close()
+            bid_info=pd.DataFrame(list(st.session_state.bid_info_input_dict.items()), columns=['key', 'value'])
+            bid_info['type']='BID_INFO'
+            bid_info['time']=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+            bid_info['ID']=id
+            bid_info.to_sql(name='data', con=conn, if_exists='append', index=False)
+            conn.close()
             st.success('Done')
+            st.rerun()
     ## tu.doan July 2024
     # need to do something here to save to selected datastore of choice, SQLite do not work OK so fuurther code has been removed
 
 @st.experimental_dialog("NEW_CUSTOMER_INFO_INPUT_DIAGLOG")
-def init_customer_input_info_form_locked(customer_info_schema = None ):
+def init_customer_input_info_form_locked(database_path,customer_info_schema = None ):
 
     st.subheader(':orange[**Get info of new customer and saving it to DB**]')
     if customer_info_schema is None:
@@ -475,8 +515,22 @@ def init_customer_input_info_form_locked(customer_info_schema = None ):
         if not st.session_state.customer_info_input_dict:
             st.error('No new info available')
         else:
-            st.dataframe(st.session_state["customer_info_input_dict"])
+            conn = sqlite3.connect(database_path)
+            cur = conn.cursor()
+            listOfTables = cur.execute(''' SELECT count(name) FROM sqlite_master WHERE type='table' AND name='data' ''')
+            if listOfTables.fetchone()[0]==1:
+                id=cur.execute('''SELECT COALESCE(MAX(ID)+1, 0) FROM data''').fetchone()[0]
+            else:
+                id=1
+            cur.close()
+            bid_info=pd.DataFrame(list(st.session_state.customer_info_input_dict.items()), columns=['key', 'value'])
+            bid_info['type']='BID_OWNER'
+            bid_info['time']=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            bid_info['ID']=id
+            bid_info.to_sql(name='data', con=conn, if_exists='append', index=False)
+            conn.close()
             st.success('Done')
+            st.rerun()
     ## tu.doan July 2024
     # need to do something here to save to selected datastore of choice, SQLite do not work OK so fuurther code has been removed
 
