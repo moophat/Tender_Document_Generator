@@ -426,7 +426,6 @@ def file_selector(folder_path='.'):
     return selected_filename
 
 def create_default_table(db_path):
-    st.write(os.path.dirname(os.path.abspath(__file__)))
     conn = sqlite3.connect(db_path)
     cur = conn.cursor()
     listOfTables = cur.execute(''' SELECT count(name) FROM sqlite_master WHERE type='table' AND name='data' ''')
