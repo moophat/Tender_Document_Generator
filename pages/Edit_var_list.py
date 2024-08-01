@@ -30,11 +30,10 @@ with st.sidebar:
 variable_options=[]
 with st_stdout("code",TerminalOutput, cache_data=True), st_stderr("code",LoggingOutput, cache_data=True):
     yaml_data_file_path = os.path.normpath(
-                            os.path.join(
-                                os.path.dirname(os.path.abspath(__file__)),
-                                ".." , 
-                                "data/input_data_schema.yaml")
-                    )
+                                os.path.join(
+                                os.environ['DATA_DIR'],
+                                "input_data_schema.yaml")
+                            )
     st.header("VARIABLES MANAGEMENT")
     update_button=st.button("UPDATE")
     current_schema=load_schema_data(yaml_data_file_path)

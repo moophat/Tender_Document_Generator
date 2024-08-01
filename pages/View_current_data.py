@@ -31,16 +31,12 @@ with st_stdout("code",TerminalOutput, cache_data=True), st_stderr("code",Logging
         st.session_state["customer_info_input_dict"] = ''
     input_schema_file_path = os.path.normpath(
                                 os.path.join(
-                                os.path.dirname(os.path.abspath(__file__)),
-                                ".." , 
-                                "data",
+                                os.environ['DATA_DIR'],
                                 "input_data_schema.yaml")
                             )
     db_file_path = os.path.normpath(
                                 os.path.join(
-                                os.path.dirname(os.path.abspath(__file__)),
-                                ".." , 
-                                "data",
+                                os.environ['DATA_DIR'],
                                 "database.sqlite")
                             )
     with open(input_schema_file_path,'r',encoding='utf8') as data_file:
@@ -58,7 +54,8 @@ with st_stdout("code",TerminalOutput, cache_data=True), st_stderr("code",Logging
     for i in ['SVTECH_INFO','BID_OWNER','BID_INFO']:
         st.header(i if 'SVTECH' in i else i+' LIST')
         save_button=st.button("UPDATE", key=f"button_{i}",disabled=st.session_state.get(f"update_state_{i}", True))
-        current_data=all_data.loc[all_data['type']==i].pivot(values='value', index=['ID', 'type','time'], columns='key').reset_index()
+        # current_data=all_data.loc[all_data['type']==i].pivot(values='value', index=['ID', 'type','time'], columns='key').reset_index()
+        current_data=loading_data(conn, i)
         current_data.insert(loc=0, column='Delete?', value=False)
         new_data=st.data_editor(key=f"current_data_{i}",data=   current_data,use_container_width = True,disabled=["time"], args=(i,),on_change=change_update_button_state, hide_index=True, column_config={'ID':None,'type':None})
         if save_button:
@@ -78,3 +75,4 @@ with st_stdout("code",TerminalOutput, cache_data=True), st_stderr("code",Logging
             cur.close()
             st.success('Done')
             st.rerun()
+    conn.close()

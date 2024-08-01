@@ -448,6 +448,10 @@ def create_default_table(db_path):
     cur.close()
     conn.close()
 
+def loading_data(conn, type):
+    data=pd.read_sql_query("SELECT * FROM 'data' where type=(?)" , conn,params=(type,))
+    return data.pivot(values='value', index=['ID', 'type','time'], columns='key').reset_index()
+
 @st.experimental_dialog("NEW_BID_INFO_INPUT_DIAGLOG")
 def init_bid_input_info_form_locked(database_path,bid_info_schema = None):
 
