@@ -323,6 +323,22 @@ def extract_rar(data, output_dir):
     with rarfile.RarFile(BytesIO(data), 'r') as rar:
         rar.extractall(output_dir)
 
+def compress_folder(folder_path):
+    import io
+    import zipfile
+    zip_buffer = io.BytesIO()
+    
+    with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+        # Walk through the folder
+        for root, dirs, files in os.walk(folder_path):
+            for file in files:
+                file_path = os.path.join(root, file)
+                # Add file to the zip file
+                zip_file.write(file_path, os.path.relpath(file_path, folder_path))
+    zip_file.close()
+    zip_buffer.seek(0)  # Move to the beginning of the buffer
+    return zip_buffer
+
 def download_file_button(object_to_download, download_filename, button_text, pickle_it=False):
     import base64
     import io
@@ -345,6 +361,7 @@ def download_file_button(object_to_download, download_filename, button_text, pic
     download_link(your_df, 'YOUR_DF.csv', 'Click to download data!')
     download_link(your_str, 'YOUR_STRING.txt', 'Click to download text!')
     """
+    st.write()
     if pickle_it:
         try:
             object_to_download = pickle.dumps(object_to_download)
@@ -354,7 +371,6 @@ def download_file_button(object_to_download, download_filename, button_text, pic
     else:
         if isinstance(object_to_download, bytes):
             pass
-
         elif isinstance(object_to_download, pd.DataFrame):
             object_to_download = object_to_download.to_csv(index=False)
         else:

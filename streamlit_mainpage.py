@@ -21,7 +21,7 @@ st.subheader("# Sample application to render tender document base on pre-defined
 st.subheader("# Different phase will be displayed on left-hand sidebar")
 create_default_table(os.path.normpath(
                                 os.path.join(
-                                os.environ['DATA_DIR'],
+                                os.environ['DB_DIR'],
                                 "database.sqlite")
                             ))
 pg = st.navigation([st.Page("pages/Edit_var_list.py", title="View/Edit variable list", icon="✒️"),

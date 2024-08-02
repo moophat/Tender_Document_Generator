@@ -31,7 +31,7 @@ variable_options=[]
 with st_stdout("code",TerminalOutput, cache_data=True), st_stderr("code",LoggingOutput, cache_data=True):
     yaml_data_file_path = os.path.normpath(
                                 os.path.join(
-                                os.environ['DATA_DIR'],
+                                os.environ['DB_DIR'],
                                 "input_data_schema.yaml")
                             )
     st.header("VARIABLES MANAGEMENT")

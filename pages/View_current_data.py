@@ -31,12 +31,12 @@ with st_stdout("code",TerminalOutput, cache_data=True), st_stderr("code",Logging
         st.session_state["customer_info_input_dict"] = ''
     input_schema_file_path = os.path.normpath(
                                 os.path.join(
-                                os.environ['DATA_DIR'],
+                                os.environ['DB_DIR'],
                                 "input_data_schema.yaml")
                             )
     db_file_path = os.path.normpath(
                                 os.path.join(
-                                os.environ['DATA_DIR'],
+                                os.environ['DB_DIR'],
                                 "database.sqlite")
                             )
     with open(input_schema_file_path,'r',encoding='utf8') as data_file:

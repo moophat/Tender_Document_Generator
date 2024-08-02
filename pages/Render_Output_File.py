@@ -51,7 +51,7 @@ with st_stdout("code",TerminalOutput, cache_data=True), st_stderr("code",Logging
     ### open data file
     db_file_path = os.path.normpath(
                                 os.path.join(
-                                os.environ['DATA_DIR'],
+                                os.environ['DB_DIR'],
                                 "database.sqlite")
                             )
     conn = sqlite3.connect(db_file_path)
@@ -131,10 +131,14 @@ with st_stdout("code",TerminalOutput, cache_data=True), st_stderr("code",Logging
                             template_object.render(context)
                             output_file_name = os.path.join(output_dir,
                                                             template_name)
-                            
-                            
-                            st.write("Creating fiile  {}...".format(os.path.abspath(output_file_name)))
+                            st.write("Creating file  {}...".format(os.path.abspath(output_file_name)))
                             template_object.save(os.path.abspath(output_file_name))
-                st.write("Done")
+            st.success('Done')
+            with st.container(border = True) as container:
+                col3, col4 = st.columns([7,3])
+                with col3:
+                    st.write("*Use beside button for download output files ...*")
+                with col4:
+                    st.markdown(download_file_button(compress_folder(output_dir).getvalue(),'output_{}_{}.zip'.format(context['E_TBMT'],template_set_name),"Download output"),unsafe_allow_html=True)
                 # Provide user with a download button that let them download the content of each output_dir
                 # this should be simple but we need a way to store/edit actual data first.
