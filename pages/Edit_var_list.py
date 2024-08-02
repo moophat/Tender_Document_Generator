@@ -37,7 +37,7 @@ with st_stdout("code",TerminalOutput, cache_data=True), st_stderr("code",Logging
     st.header("VARIABLES MANAGEMENT")
     update_button=st.button("UPDATE")
     current_schema=load_schema_data(yaml_data_file_path)
-    new_schema=st.data_editor(current_schema, num_rows="dynamic")
+    new_schema=st.data_editor(current_schema, num_rows="dynamic",use_container_width = True,)
     if update_button:
         new_schema = new_schema.groupby('Type')['Variable'].apply(list).to_dict()
         write_schema_data(yaml_data_file_path,new_schema)

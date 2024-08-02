@@ -34,10 +34,7 @@ with st_stdout("code",TerminalOutput, cache_data=True), st_stderr("code",Logging
     selected_template_sets = []
     context_data_list = []
     ##########Template column management
-    template_path = os.path.normpath(os.path.join(
-                                                os.path.dirname(os.path.abspath(__file__)),
-                                                ".." , 
-                                                "templates")
+    template_path = os.path.normpath(os.environ['TEMPLATE_DIR']
                                     )
     with template_selection_col:
         st.header("TEMPLATE LIST")
@@ -113,8 +110,7 @@ with st_stdout("code",TerminalOutput, cache_data=True), st_stderr("code",Logging
                     st.write("Processing data {}...".format(context['E_TBMT']))
                     for template_set_name in selected_template_sets:
                         
-                        output_dir = CREATE_EXPORT_DIR(os.path.join('./',
-                                                                'output',
+                        output_dir = CREATE_EXPORT_DIR(os.path.join(os.environ['OUTPUT_DIR'],
                                                                 context['E_TBMT'],
                                                                 template_set_name)
                                                 )
@@ -135,7 +131,7 @@ with st_stdout("code",TerminalOutput, cache_data=True), st_stderr("code",Logging
                             template_object.save(os.path.abspath(output_file_name))
             st.success('Done')
             with st.container(border = True) as container:
-                col3, col4 = st.columns([7,3])
+                col3, col4 = st.columns([8,2])
                 with col3:
                     st.write("*Use beside button for download output files ...*")
                 with col4:
