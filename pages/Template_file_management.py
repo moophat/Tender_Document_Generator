@@ -27,10 +27,7 @@ with st.sidebar:
 with st_stdout("code",TerminalOutput, cache_data=True), st_stderr("code",LoggingOutput, cache_data=True):
 
     input_data, output_preview = st.columns([1, 4])
-    template_path = os.path.normpath(os.path.join(
-                                                os.path.dirname(os.path.abspath(__file__)),
-                                                ".." , 
-                                                "templates")
+    template_path = os.path.normpath(os.environ['TEMPLATE_DIR']
                                     )
     with input_data:
         if st.button(":star2: :orange[**NEW_TEMPLATE**]", use_container_width=True):
