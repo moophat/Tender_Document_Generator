@@ -384,19 +384,19 @@ def download_file_button(object_to_download, download_filename, button_text, pic
     custom_css = f""" 
         <style>
             #{button_id} {{
+                width: 100%;
                 background-color: rgb(255, 255, 255);
                 color: rgb(38, 39, 48);
-                padding: 0.25em 0.38em;
+                padding: 0.41em 0.38em;
                 position: relative;
                 text-decoration: none;
-                border-radius: 4px;
+                border-radius: 6px;
                 border-width: 1px;
                 border-style: solid;
-                border-color: rgb(230, 234, 241);
+                border-color: rgb(49, 51, 63, 0.2);
                 border-image: initial;
                 white-space: normal;
                 display: inline-block; /* Make the <a> element respect width and height properties */
-                max-width: 100%; /* Ensure it doesn’t exceed the container’s width */
                 word-wrap: break-word; /* Break long words onto new lines if needed */
                 overflow-wrap: break-word; /* Fallback for older browsers */
                 text-align: center;

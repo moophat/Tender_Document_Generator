@@ -14,4 +14,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 8503
 
 # Command to run Streamlit
-CMD ["streamlit", "run", "streamlit_mainpage.py","--server.port=8503", "--server.baseUrlPath=/tender/", "--server.address=0.0.0.0"]
+CMD ["streamlit", "run", "streamlit_mainpage.py","--server.port=8503", "--server.baseUrlPath=/docxtemplate/", "--server.address=0.0.0.0"]
