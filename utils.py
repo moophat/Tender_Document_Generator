@@ -341,7 +341,6 @@ def compress_folder(folder_path):
 
 def download_file_button(object_to_download, download_filename, button_text, pickle_it=False):
     import base64
-    import io
     import uuid
     """
     Generates a link to download the given object_to_download.
@@ -379,7 +378,6 @@ def download_file_button(object_to_download, download_filename, button_text, pic
         b64 = base64.b64encode(object_to_download.encode()).decode()
     except AttributeError as e:
         b64 = base64.b64encode(object_to_download).decode()
-
     button_uuid = str(uuid.uuid4()).replace('-', '')
     button_id = re.sub('\d+', '', button_uuid)
 
@@ -396,6 +394,12 @@ def download_file_button(object_to_download, download_filename, button_text, pic
                 border-style: solid;
                 border-color: rgb(230, 234, 241);
                 border-image: initial;
+                white-space: normal;
+                display: inline-block; /* Make the <a> element respect width and height properties */
+                max-width: 100%; /* Ensure it doesn’t exceed the container’s width */
+                word-wrap: break-word; /* Break long words onto new lines if needed */
+                overflow-wrap: break-word; /* Fallback for older browsers */
+                text-align: center;
             }} 
             #{button_id}:hover {{
                 border-color: rgb(246, 51, 102);
@@ -496,6 +500,10 @@ def init_bid_input_info_form_locked(database_path,bid_info_schema = None):
             cur = conn.cursor()
             listOfTables = cur.execute(''' SELECT count(name) FROM sqlite_master WHERE type='table' AND name='data' ''')
             if listOfTables.fetchone()[0]==1:
+                list_E_TBMT=cur.execute('select value from data where key="E_TBMT"').fetchall()
+                if st.session_state.bid_info_input_dict['E_TBMT'] in [d[0] for d in list_E_TBMT]:
+                    st.error('E_TBMT {} already exist!!!!!'.format(st.session_state.bid_info_input_dict['E_TBMT']))
+                    return
                 id=cur.execute('''SELECT COALESCE(MAX(ID)+1, 0) FROM data''').fetchone()[0]
             else:
                 id=1

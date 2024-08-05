@@ -54,6 +54,8 @@ with st_stdout("code",TerminalOutput, cache_data=True), st_stderr("code",Logging
                     inititate_template_dialog(template_directory= template_path,
                                               template_name=template)
             with download_widget:
-                if st.button(":arrow_down: :green[DOWNLOAD_{}]".format(template), use_container_width=True):
-                    st.rerun()
+                font_awesome_cdn = '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">'
+                st.markdown(font_awesome_cdn +download_file_button(compress_folder(os.path.join(template_path,template)).getvalue(),'template_{}.zip'.format(template),"<i class='btn-icon fas fa-download'></i></br>DOWNLOAD_{}".format(template)),unsafe_allow_html=True)
+                # if st.button(":arrow_down: :green[DOWNLOAD_{}]".format(template), use_container_width=True):
+                #     st.rerun()
                     ##use the same download function as the output rendering here - inprogress
