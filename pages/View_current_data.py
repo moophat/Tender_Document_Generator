@@ -39,8 +39,7 @@ with st_stdout("code",TerminalOutput, cache_data=True), st_stderr("code",Logging
                                 os.environ['DB_DIR'],
                                 "database.sqlite")
                             )
-    with open(input_schema_file_path,'r',encoding='utf8') as data_file:
-        input_schema = yaml.safe_load(data_file,)
+    input_schema=read_config_yaml(input_schema_file_path)
 
     if st.button(":star2: :orange[**NEW_BID_INFO**]", use_container_width=True):
         init_bid_input_info_form_locked( bid_info_schema = input_schema["BID_INFO"],database_path= db_file_path)
@@ -57,7 +56,7 @@ with st_stdout("code",TerminalOutput, cache_data=True), st_stderr("code",Logging
         # current_data=all_data.loc[all_data['type']==i].pivot(values='value', index=['ID', 'type','time'], columns='key').reset_index()
         current_data=loading_data(conn, i)
         current_data.insert(loc=0, column='Delete?', value=False)
-        new_data=st.data_editor(key=f"current_data_{i}",data=   current_data,use_container_width = True,disabled=["time"], args=(i,),on_change=change_update_button_state, hide_index=True, column_config={'ID':None,'type':None})
+        new_data=st.data_editor(key=f"current_data_{i}",data=   current_data,use_container_width = True,disabled=["time"], args=(i,),on_change=change_update_button_state, hide_index=True, column_config={'ID':None,'type':None,'time':None})
         if save_button:
             cur = conn.cursor()
             list_delete_id=new_data.loc[new_data['Delete?']==True]['ID'].to_list()
